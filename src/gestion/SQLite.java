@@ -30,16 +30,27 @@ public class SQLite implements AutoCloseable{
     public void inicio() throws SQLException{
         Statement statement = connection.createStatement();
 
+        // Corrected CREATE TABLE statements
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS usuarios ("
                 + "DNI TEXT PRIMARY KEY,"
                 + "nombre TEXT,"
-                + "saldo INTEGER,"
+                + "saldo INTEGER"
                 + ")");
+
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS movimientos ("
                 + "DNI TEXT PRIMARY KEY,"
                 + "tipo TEXT,"
-                + "saldo INTEGER,"
+                + "saldo INTEGER"
                 + ")");
+
+        // Corrected SELECT query
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM usuarios");
+
+        // Insert data if the table is empty
+        if (!resultSet.next()) { // Check if ResultSet is empty
+            statement.executeUpdate("INSERT INTO usuarios (DNI, nombre, saldo) VALUES ('55930437A', 'Manolo', 28000)");
+            statement.executeUpdate("INSERT INTO usuarios (DNI, nombre, saldo) VALUES ('25138957A', 'Fernando', 280000)");
+        }
     }
 
     public Connection getConnection() {

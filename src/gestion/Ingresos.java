@@ -1,51 +1,69 @@
 package gestion;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
-public class Ingresos extends Exception{
+public class Ingresos{
     static Scanner sc = new Scanner(System.in);
-    public void gastos() throws Exception {
+    public static void ingresos(String DNI) throws Exception {
         System.out.println(""" 
-                Tipo de gastos
+                Tipo de Ingresos
                 1. Nomina
                 2. Venta en páginas de segunda mano
                 """);
         String numT = sc.next();
         int tipo = tipoCom(numT);
 
-        System.out.println("Introduzca el gasto");
-        String sGasto = sc.next();
-        int coste = costeCom(sGasto);
+        System.out.println("Introduzca el Ingreso");
+        String sIngreso = sc.next();
+        int ganancia = gananciaCom(sIngreso);
 
-        //comprobar si se puede relizar el gasto
-
-        //insertar gasto
+        try(SQLite sql = new SQLite()){
+            Connection conn = sql.getConnection();
+            // Crear la consulta SQL
+            String sentencia = "SELECT saldo from usuarios WHERE DNI = ? ";
+            PreparedStatement statement = conn.prepareStatement(sentencia);
+            statement.setString(1,DNI);
+            ResultSet resultSet = statement.executeQuery();
+            int saldo = resultSet.getInt("saldo");
+            sentencia = "UPDATE usuarios SET saldo = ? WHERE DNI = ? ";
+            PreparedStatement actu = conn.prepareStatement(sentencia);
+            saldo += ganancia;
+            actu.setInt(1,saldo);
+            actu.setString(2,DNI);
+            actu.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
     
-    private int tipoCom(String numT) throws Exception {
+    private static int tipoCom(String numT) throws Exception {
         int tipo = 0;
         try{
             tipo = Integer.parseInt(numT);
         }catch (NumberFormatException e){
             throw new Exception("formato no valido");
         }
-        if (tipo<0||tipo>4){
-            throw new Exception("Tiene que ser un numero del 1 al 4");
+        if (tipo<0||tipo>2){
+            throw new Exception("Tiene que ser un numero del 1 al 2");
         }
         return tipo;
     }
 
-    private int costeCom(String sGasto) throws Exception {
-        int gasto = 0;
+    private static int gananciaCom(String sIngreso) throws Exception {
+        int Ingreso = 0;
         try{
-            gasto = Integer.parseInt(sGasto);
+            Ingreso = Integer.parseInt(sIngreso);
         }catch (NumberFormatException e){
             throw new Exception("formato no valido");
         }
-        if (gasto<0){
+        if (Ingreso<0){
             throw new Exception("Tiene que ser un numero positivo");
         }
-        return gasto;
+        return Ingreso;
     }
     
 }

@@ -2,9 +2,9 @@ package gestion;
 
 import java.util.Scanner;
 
-public class Gastos extends Exception{
+public class Gastos {
     static Scanner sc = new Scanner(System.in);
-    public void gastos() throws Exception {
+    public static void gastos(String DNI) throws Exception {
         System.out.println(""" 
                 Tipo de gastos
                 1. Vacaciones
@@ -23,7 +23,7 @@ public class Gastos extends Exception{
         //insertar gasto
     }
     
-    private int tipoCom(String numT) throws Exception {
+    private static int tipoCom(String numT) throws Exception {
         int tipo = 0;
         try{
             tipo = Integer.parseInt(numT);
@@ -36,7 +36,7 @@ public class Gastos extends Exception{
         return tipo;
     }
 
-    private int costeCom(String sGasto) throws Exception {
+    private static int costeCom(String sGasto) throws Exception {
         int gasto = 0;
         try{
             gasto = Integer.parseInt(sGasto);
