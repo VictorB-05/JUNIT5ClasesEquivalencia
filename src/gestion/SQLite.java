@@ -38,7 +38,8 @@ public class SQLite implements AutoCloseable{
                 + ")");
 
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS movimientos ("
-                + "DNI TEXT PRIMARY KEY,"
+                + "id INTEGER PRIMARY KEY,"
+                + "DNI TEXT,"
                 + "tipo TEXT,"
                 + "saldo INTEGER"
                 + ")");

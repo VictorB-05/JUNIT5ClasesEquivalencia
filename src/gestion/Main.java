@@ -1,14 +1,14 @@
 package gestion;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        try{
-            SQLite sqLite = new SQLite();
+        try( SQLite sqLite = new SQLite()){
             sqLite.inicio();
-            sqLite.close();
         }catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -71,13 +71,31 @@ public class Main {
                 String auxS = DNI.substring(0,8);
                 int num = Integer.parseInt(auxS);
                 if(letras[num%23]==letra){
-                    correcto=true;
+                    correcto = baseDNI(DNI);
                 }
             }catch (NumberFormatException e){
                 System.out.println("2. wqddwdw");
             }
         }
         return correcto;
+    }
+
+    public static boolean baseDNI(String DNI){
+        boolean aux = false;
+        try( SQLite sqLite = new SQLite()){
+            Connection conn = sqLite.getConnection();
+            // Crear la consulta SQL
+            String sentencia = "SELECT * FROM usuarios WHERE DNI = ?";
+            PreparedStatement statement = conn.prepareStatement(sentencia);
+            statement.setString(1,DNI);
+            if(statement.executeQuery().next()){
+                System.out.println((DNI));
+                aux= true;
+            }
+        }catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return aux;
     }
 
 }
